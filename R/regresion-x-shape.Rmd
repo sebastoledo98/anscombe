@@ -1,0 +1,41 @@
+---
+title: "Datasaurus Regresion X-shape"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries}
+library(ggplot2)
+library(datasauRus)
+library(tidyverse)
+library(dplyr)
+```
+
+```{r dataset}
+datasaurus_dozen %>%
+  group_by(dataset) %>%
+  summarize(
+    mean_x = mean(x),
+    mean_y = mean(y),
+    std_dev_x = sd(x),
+    std_dev_y = sd(y),
+    corr_x_y = cor(x, y)
+  )
+```
+
+```{r linear regression}
+x_shape_data <- datasaurus_dozen[datasaurus_dozen$dataset == "x_shape", ]
+model <- lm(y ~ x, data = x_shape_data)
+summary(model)
+```
+
+```{r linear regression plot}
+ggplot(x_shape_data, aes(x=x, y=y)) +
+  geom_point(color = "steelblue", size = 2, alpha = 0.6) +
+  geom_smooth(method = "lm", se = FALSE, color = "red", linewidth = 1) +
+  labs(title = "Regresión Lineal: Datasaurus X-Shape", x = "X Values", y = "Y Values") +
+  theme_minimal()
+```
